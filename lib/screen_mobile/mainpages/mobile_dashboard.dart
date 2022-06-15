@@ -355,6 +355,7 @@ class InformasiKPR extends StatelessWidget {
           ),
 
           InkWell(
+            onTap: (){Get.toNamed("/pengajuan_kredit");},
             child: Container(
               margin: EdgeInsets.only(top: 20),
               width: _width*0.5,

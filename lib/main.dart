@@ -21,6 +21,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      getPages: [
+        GetPage(name: '/', page: () => const MyApp()),
+        GetPage(name: '/pengajuan_kredit', page: () => const MyApp()),
+      ],
       title: 'KRSS',
       theme: theme(),
       home: Responsive(

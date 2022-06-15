@@ -68,4 +68,3 @@ int getScreenSizeIndex(ScreenSize screen){
   return _idx;
 
 }
-
