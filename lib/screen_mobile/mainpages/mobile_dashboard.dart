@@ -84,7 +84,7 @@ class Mobile_Dashboard extends StatelessWidget {
         ],
       ),
       body: Container(
-        height: _height,
+        height: _height < 500 ? _height*1.5 : _height,
         child: ListView(
           children: [
             SizedBox(height: 10),
@@ -92,9 +92,12 @@ class Mobile_Dashboard extends StatelessWidget {
             InformasiKPR(),
             WidgetOption(),
             Menu(),
-            SizedBox(height: _height < 800
-                ? _height*0.1
-                : _height*0.03
+            Container(
+                height: _height < 800
+                    ? _height*0.1
+                    : _height < 500
+                    ? _height*0.2
+                    : _height*0.03
             ),
           ],
         ),
@@ -117,7 +120,7 @@ class Header extends StatelessWidget {
     return Container(
       width: _width,
       height: _height < 650
-          ? _height*0.3
+          ? _height*0.38
           : _height < 800
           ? _height*0.28
           : _height*0.2,
@@ -283,7 +286,7 @@ class InformasiKPR extends StatelessWidget {
     return Container(
       width: _width,
       height: _height < 650
-          ? _height*0.28
+          ? _height*0.35
           : _height < 800
           ? _height*0.25
           : _height*0.18,
@@ -305,7 +308,7 @@ class InformasiKPR extends StatelessWidget {
           Container(
             width: _width,
             height: _height < 650
-                ? _height*0.25
+                ? _height*0.15
                 : _height < 800
                 ? _height*0.1
                 : _height*0.07,
