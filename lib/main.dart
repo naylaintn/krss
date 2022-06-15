@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:krss/screen_desktop/mainpages/desktop_main_page.dart';
 import 'package:krss/screen_mobile/mainpages/mobile_main_page.dart';
+import 'package:krss/screen_mobile/pengajuan_kredit_pages/main_page_pengajuan.dart';
 import 'package:krss/screen_tablet/mainpages/tablet_main_page.dart';
 import 'package:krss/util/responsive.dart';
 import 'package:krss/util/theme.dart';
@@ -20,10 +21,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      initialRoute: "/",
       debugShowCheckedModeBanner: false,
       getPages: [
         GetPage(name: '/', page: () => const MyApp()),
-        GetPage(name: '/pengajuan_kredit', page: () => const MyApp()),
+        GetPage(name: '/pengajuan_kredit', page: () => const CreditSubmission()),
       ],
       title: 'KRSS',
       theme: theme(),

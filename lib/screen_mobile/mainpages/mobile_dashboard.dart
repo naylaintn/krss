@@ -84,7 +84,7 @@ class Mobile_Dashboard extends StatelessWidget {
         ],
       ),
       body: Container(
-        height: _height < 500 ? _height*1.5 : _height,
+        height: _height < 700 ? _height*1.5 : _height,
         child: ListView(
           children: [
             SizedBox(height: 10),
@@ -95,7 +95,7 @@ class Mobile_Dashboard extends StatelessWidget {
             Container(
                 height: _height < 800
                     ? _height*0.1
-                    : _height < 500
+                    : _height < 700
                     ? _height*0.2
                     : _height*0.03
             ),
@@ -170,18 +170,18 @@ class Header extends StatelessWidget {
                     children: [
                       SizedBox(
                         width: _width*0.3,
-                        child: Text("Provinsi", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10)),
+                        child: Text("Provinsi", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height < 700 ? 10 : 12)),
                       ),
                       Obx((){
                         if(_controller.login.value.isTrue){
                           return SizedBox(
                             width: _width*0.4,
-                            child: Text(_controller.User.value.addressL1, style: TextStyle(fontSize: 10)),
+                            child: Text(_controller.User.value.addressL1, style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
                           );
                         } else {
                           return SizedBox(
                             width: _width*0.4,
-                            child: Text("Aceh", style: TextStyle(fontSize: 10)),
+                            child: Text("Aceh", style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
                           );
                         }
                       }),
@@ -195,18 +195,18 @@ class Header extends StatelessWidget {
                     children: [
                       SizedBox(
                         width: _width*0.3,
-                        child: Text("Kota/Kabupaten", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10)),
+                        child: Text("Kota/Kabupaten", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height < 700 ? 10 : 12)),
                       ),
                       Obx((){
                         if(_controller.login.value.isTrue){
                           return SizedBox(
                             width: _width*0.4,
-                            child: Text(_controller.User.value.addressL2, style: TextStyle(fontSize: 10)),
+                            child: Text(_controller.User.value.addressL2, style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
                           );
                         } else {
                           return SizedBox(
                             width: _width*0.4,
-                            child: Text("Kabupaten Aceh Barat Daya", style: TextStyle(fontSize: 10)),
+                            child: Text("Kabupaten Aceh Barat Daya", style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
                           );
                         }
                       }),
@@ -220,18 +220,18 @@ class Header extends StatelessWidget {
                     children: [
                       SizedBox(
                         width: _width*0.3,
-                        child: Text("Kecamatan", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10)),
+                        child: Text("Kecamatan", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height < 700 ? 10 : 12)),
                       ),
                       Obx((){
                         if(_controller.login.value.isTrue){
                           return SizedBox(
                             width: _width*0.4,
-                            child: Text(_controller.User.value.addressL3, style: TextStyle(fontSize: 12)),
+                            child: Text(_controller.User.value.addressL3, style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
                           );
                         } else {
                           return SizedBox(
                             width: _width*0.4,
-                            child: Text("Kabupaten Aceh Barat Daya", style: TextStyle(fontSize: 10)),
+                            child: Text("Kabupaten Aceh Barat Daya", style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
                           );
                         }
                       }),
@@ -245,18 +245,18 @@ class Header extends StatelessWidget {
                     children: [
                       SizedBox(
                         width: _width*0.3,
-                        child: Text("Desa", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10)),
+                        child: Text("Desa", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height < 700 ? 10 : 12)),
                       ),
                       Obx((){
                         if(_controller.login.value.isTrue){
                           return SizedBox(
                             width: _width*0.4,
-                            child: Text(_controller.User.value.addressL4, style: TextStyle(fontSize: 10)),
+                            child: Text(_controller.User.value.addressL4, style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
                           );
                         } else {
                           return SizedBox(
                             width: _width*0.4,
-                            child: Text("Kabupaten Aceh Barat Daya", style: TextStyle(fontSize: 10)),
+                            child: Text("Kabupaten Aceh Barat Daya", style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
                           );
                         }
                       }),

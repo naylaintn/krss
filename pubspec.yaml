@@ -60,6 +60,7 @@ dev_dependencies:
   carousel_slider: ^4.0.0
   percent_indicator: ^4.0.0
   image_picker: ^0.8.5+3
+  table_calendar: ^3.0.6
 
 flutter_icons:
   android: true
