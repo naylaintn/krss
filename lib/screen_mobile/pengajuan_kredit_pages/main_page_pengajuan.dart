@@ -5,7 +5,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 import '../../bloc/user_controller.dart';
-import '../../util/theme.dart';
 
 class CreditSubmission extends StatelessWidget {
   const CreditSubmission({Key? key}) : super(key: key);
@@ -18,6 +17,7 @@ class CreditSubmission extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
+        backgroundColor: scaffoldColor,
         appBar: AppBar(
           title: Text("Form Pengajuan Kredit", style: TextStyle(color: kTextColor, fontSize: 18)),
         ),

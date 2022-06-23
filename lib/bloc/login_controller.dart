@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:krss/model/change_password.dart';
 import 'package:krss/model/check_password.dart';
-import 'package:krss/model/content_data.dart';
 import 'package:krss/model/credential.dart';
 import 'package:krss/model/image_data.dart';
 import 'package:krss/model/user_data.dart';
@@ -25,17 +24,14 @@ class LoginController extends GetxController {
   var login = RxBool(false).obs;
   var imageData = ImageData().obs;
   var User = Credential().obs;
+  var address = 'Address'.obs;
+  var location = 'Location'.obs;
 
   //======== InfoController =================================
 
-  Map contentDataMap = Map<String, ContentData>();
   Map<String, ImageSimple> imageMap = Map<String, ImageSimple>();
   var dataLength = 0.obs;
   var imageLength = 0.obs;
-
-  bool dataAvailable(String key){
-    return dataLength.value>0 && contentDataMap.containsKey(key)?true:false;
-  }
 
   bool imageAvailable(String key){
     return imageLength.value>0 && imageMap.containsKey(key)?true:false;

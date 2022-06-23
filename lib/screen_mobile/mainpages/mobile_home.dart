@@ -354,26 +354,60 @@ class InformasiKPR extends StatelessWidget {
             ),
           ),
 
-          InkWell(
-            onTap: (){Get.toNamed("/pengajuan_kredit");},
-            child: Container(
-              margin: EdgeInsets.only(top: 20),
-              width: _width*0.5,
-              height: 50,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(35),
-                color: kPrimaryColor,
+         Container(
+           width: _width,
+           height: 70,
+           child: Row(
+             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+             children: [
+               Expanded(
+                 child: InkWell(
+                   onTap: (){Get.toNamed("/pengajuan_kredit");},
+                   child: Container(
+                     height: 70,
+                     margin: EdgeInsets.only(top: 20),
+                     decoration: BoxDecoration(
+                       borderRadius: BorderRadius.circular(15),
+                       color: kPrimaryColor,
+                     ),
+                     child: Row(
+                       mainAxisAlignment: MainAxisAlignment.center,
+                       children: [
+                         FaIcon(FontAwesomeIcons.solidCreditCard, size: 15, color: Colors.white),
+                         SizedBox(width: 20),
+                         Text("Pengajuan Kredit", style: TextStyle(fontSize: 12, color: Colors.white)),
+                       ],
+                     ),
+                   ),
+                 ),
+               ),
+
+              SizedBox(width: 15),
+
+              Expanded(
+                child:  InkWell(
+                  onTap: (){Get.toNamed("/rab");},
+                  child: Container(
+                    height: 70,
+                    margin: EdgeInsets.only(top: 20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: kPrimaryColor,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FaIcon(FontAwesomeIcons.solidRectangleList, size: 15, color: Colors.white),
+                        SizedBox(width: 20),
+                        Text("RAB", style: TextStyle(fontSize: 12, color: Colors.white)),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FaIcon(FontAwesomeIcons.solidCreditCard, size: 15, color: Colors.white),
-                  SizedBox(width: 20),
-                  Text("Pengajuan Kredit", style: TextStyle(fontSize: 12, color: Colors.white)),
-                ],
-              ),
-            ),
-          ),
+             ],
+           ),
+         ),
         ],
       ),
     );
@@ -565,7 +599,7 @@ class Menu extends StatelessWidget {
     menuItem(
       title: "Beli Bahan Bangunan",
       img: "wheelbarrow.png",
-      navigate: "",
+      navigate: "/store_page",
     ),
     menuItem(
       title: "Panduan Konstruksi",
