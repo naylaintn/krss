@@ -9,8 +9,12 @@ class Mobile_Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    LoginController _controller = Get.find();
+
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 10,
@@ -47,13 +51,18 @@ class Mobile_Dashboard extends StatelessWidget {
                       onTap: (){},
                       child: Container(
                         margin: EdgeInsets.only(right: 20, left: 15),
-                        width: 18,
-                        height: 18,
+                        width: 20,
+                        height: 20,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: kPrimaryColor,
                         ),
-                        child: Center(child: Image.memory(controller.imageData.value.img, fit: BoxFit.contain, width: 18, height: 18)),
+                        child: CircleAvatar(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Image.memory(controller.imageData.value.img),
+                          ),
+                        ),
                       ),
                     );
                   } else {
@@ -90,8 +99,18 @@ class Mobile_Dashboard extends StatelessWidget {
             SizedBox(height: 10),
             Header(),
             InformasiKPR(),
-            WidgetOption(),
-            Menu(),
+            Obx((){
+              if(_controller.login.value.isTrue){
+                return Column(
+                  children: [
+                    WidgetOption(),
+                    Menu(),
+                  ],
+                );
+              } else {
+                return Menu();
+              }
+            }),
             Container(
                 height: _height < 800
                     ? _height*0.1
@@ -122,7 +141,7 @@ class Header extends StatelessWidget {
       height: _height < 650
           ? _height*0.38
           : _height < 800
-          ? _height*0.28
+          ? _height*0.27
           : _height*0.2,
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: _width < 400 ? 10 : 20),
       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
@@ -142,129 +161,212 @@ class Header extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GetX<LoginController>(
-                builder: (controller) {
-                  if(controller.login.value.isTrue){
-                    return Text(controller.User.value.userId,
-                        textAlign: TextAlign.left,
-                        maxLines: 2,
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold));
-                  } else {
-                    return Text("Nayla Intan Kamilia", textAlign: TextAlign.left,
-                        maxLines: 2,
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold));
-                  }
-                },
-              ),
+          GetX<LoginController>(
+            builder: (controller){
+              if(controller.login.value.isTrue){
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Obx((){
+                      if(controller.User.value.name==true){
+                        return Text(controller.User.value.name,
+                            textAlign: TextAlign.left,
+                            maxLines: 2,
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold));
+                      } else {
+                        return Text("User", textAlign: TextAlign.left,
+                            maxLines: 2,
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold));
+                      }
+                    }),
 
-              SizedBox(height: 20),
+                    SizedBox(height: 20),
 
 
-              Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: _width*0.3,
-                        child: Text("Provinsi", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height < 700 ? 10 : 12)),
-                      ),
-                      Obx((){
-                        if(_controller.login.value.isTrue){
-                          return SizedBox(
-                            width: _width*0.4,
-                            child: Text(_controller.User.value.addressL1, style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
-                          );
-                        } else {
-                          return SizedBox(
-                            width: _width*0.4,
-                            child: Text("Aceh", style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
-                          );
-                        }
-                      }),
-                    ],
-                  ),
+                    Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: _width*0.3,
+                              child: Text("Provinsi", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height < 700 ? 10 : 12)),
+                            ),
+                            Obx((){
+                              if(controller.User.value.addressL1==true){
+                                return SizedBox(
+                                  width: _width*0.4,
+                                  child: Text(controller.User.value.addressL1, style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
+                                );
+                              } else {
+                                return SizedBox(
+                                  width: _width*0.4,
+                                  child: Text("-", style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
+                                );
+                              }
+                            }),
+                          ],
+                        ),
 
-                  SizedBox(height: 5),
+                        SizedBox(height: 5),
 
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: _width*0.3,
-                        child: Text("Kota/Kabupaten", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height < 700 ? 10 : 12)),
-                      ),
-                      Obx((){
-                        if(_controller.login.value.isTrue){
-                          return SizedBox(
-                            width: _width*0.4,
-                            child: Text(_controller.User.value.addressL2, style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
-                          );
-                        } else {
-                          return SizedBox(
-                            width: _width*0.4,
-                            child: Text("Kabupaten Aceh Barat Daya", style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
-                          );
-                        }
-                      }),
-                    ],
-                  ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: _width*0.3,
+                              child: Text("Kota/Kabupaten", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height < 700 ? 10 : 12)),
+                            ),
+                            Obx((){
+                              if(controller.User.value.addressL2==true){
+                                return SizedBox(
+                                  width: _width*0.4,
+                                  child: Text(_controller.User.value.addressL2, style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
+                                );
+                              } else {
+                                return SizedBox(
+                                  width: _width*0.4,
+                                  child: Text("-", style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
+                                );
+                              }
+                            }),
+                          ],
+                        ),
 
-                  SizedBox(height: 5),
+                        SizedBox(height: 5),
 
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: _width*0.3,
-                        child: Text("Kecamatan", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height < 700 ? 10 : 12)),
-                      ),
-                      Obx((){
-                        if(_controller.login.value.isTrue){
-                          return SizedBox(
-                            width: _width*0.4,
-                            child: Text(_controller.User.value.addressL3, style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
-                          );
-                        } else {
-                          return SizedBox(
-                            width: _width*0.4,
-                            child: Text("Kabupaten Aceh Barat Daya", style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
-                          );
-                        }
-                      }),
-                    ],
-                  ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: _width*0.3,
+                              child: Text("Kecamatan", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height < 700 ? 10 : 12)),
+                            ),
+                            Obx((){
+                              if(controller.User.value.addressL3==true){
+                                return SizedBox(
+                                  width: _width*0.4,
+                                  child: Text(_controller.User.value.addressL3, style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
+                                );
+                              } else {
+                                return SizedBox(
+                                  width: _width*0.4,
+                                  child: Text("-", style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
+                                );
+                              }
+                            }),
+                          ],
+                        ),
 
-                  SizedBox(height: 5),
+                        SizedBox(height: 5),
 
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: _width*0.3,
-                        child: Text("Desa", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height < 700 ? 10 : 12)),
-                      ),
-                      Obx((){
-                        if(_controller.login.value.isTrue){
-                          return SizedBox(
-                            width: _width*0.4,
-                            child: Text(_controller.User.value.addressL4, style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
-                          );
-                        } else {
-                          return SizedBox(
-                            width: _width*0.4,
-                            child: Text("Kabupaten Aceh Barat Daya", style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
-                          );
-                        }
-                      }),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: _width*0.3,
+                              child: Text("Desa", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height < 700 ? 10 : 12)),
+                            ),
+                            Obx((){
+                              if(controller.User.value.addressL4==true){
+                                return SizedBox(
+                                  width: _width*0.4,
+                                  child: Text(_controller.User.value.addressL4, style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
+                                );
+                              } else {
+                                return SizedBox(
+                                  width: _width*0.4,
+                                  child: Text("-", style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
+                                );
+                              }
+                            }),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+
+
+              } else {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("User", textAlign: TextAlign.left,
+                    maxLines: 2,
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+
+                    SizedBox(height: 20),
+
+                    Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: _width*0.3,
+                              child: Text("Provinsi", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height < 700 ? 10 : 12)),
+                            ),
+                            SizedBox(
+                              width: _width*0.4,
+                              child: Text("-", style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: 5),
+
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: _width*0.3,
+                              child: Text("Kota/Kabupaten", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height < 700 ? 10 : 12)),
+                            ),
+                            SizedBox(
+                              width: _width*0.4,
+                              child: Text("-", style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: 5),
+
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: _width*0.3,
+                              child: Text("Kecamatan", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height < 700 ? 10 : 12)),
+                            ),
+                            SizedBox(
+                              width: _width*0.4,
+                              child: Text("-", style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: 5),
+
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: _width*0.3,
+                              child: Text("Desa", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height < 700 ? 10 : 12)),
+                            ),
+                            SizedBox(
+                              width: _width*0.4,
+                              child: Text("-", style: TextStyle(fontSize: _height < 700 ? 10 : 12)),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }
+            },
           ),
         ],
       ),
@@ -272,7 +374,7 @@ class Header extends StatelessWidget {
   }
 }
 
-
+//----------------------------------------------------------------------------
 
 class InformasiKPR extends StatelessWidget {
   const InformasiKPR({Key? key}) : super(key: key);
@@ -303,116 +405,140 @@ class InformasiKPR extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        children: [
-          Container(
-            width: _width,
-            height: _height < 650
-                ? _height*0.15
-                : _height < 800
-                ? _height*0.1
-                : _height*0.07,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
+      child: GetX<LoginController>(
+        builder: (controller){
+          if(controller.login.value.isTrue){
+            return Column(
               children: [
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                      border: Border(
-                          right: BorderSide(color: kPrimaryColor)
+                Container(
+                  width: _width,
+                  height: _height < 650
+                      ? _height*0.15
+                      : _height < 800
+                      ? _height*0.1
+                      : _height*0.07,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          decoration: BoxDecoration(
+                            border: Border(
+                                right: BorderSide(color: kPrimaryColor)
+                            ),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("Rp. 50.000.000", textAlign: TextAlign.center, style: TextStyle(fontSize: 13, color: kPrimaryColor, fontWeight: FontWeight.bold)),
+                                Text("Saldo Pinjaman KPR", textAlign: TextAlign.center, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Rp. 50.000.000", textAlign: TextAlign.center, style: TextStyle(fontSize: 13, color: kPrimaryColor, fontWeight: FontWeight.bold)),
-                          Text("Saldo Pinjaman KPR", textAlign: TextAlign.center, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                        ],
+
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("XX Bulan", textAlign: TextAlign.center, style: TextStyle(fontSize: 13, color: kPrimaryColor, fontWeight: FontWeight.bold)),
+                                Text("Sisa Tenor KPR", textAlign: TextAlign.center, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
 
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("XX Bulan", textAlign: TextAlign.center, style: TextStyle(fontSize: 13, color: kPrimaryColor, fontWeight: FontWeight.bold)),
-                          Text("Sisa Tenor KPR", textAlign: TextAlign.center, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                        ],
+                Container(
+                  width: _width,
+                  height: 70,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: (){Get.toNamed("/pengajuan_kredit");},
+                          child: Container(
+                            height: 70,
+                            margin: EdgeInsets.only(top: 20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: kPrimaryColor,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                FaIcon(FontAwesomeIcons.solidCreditCard, size: 15, color: Colors.white),
+                                SizedBox(width: 20),
+                                Text("Pengajuan Kredit", style: TextStyle(fontSize: 12, color: Colors.white)),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+
+                      SizedBox(width: 15),
+
+                      Expanded(
+                        child:  InkWell(
+                          onTap: (){Get.toNamed("/rab");},
+                          child: Container(
+                            height: 70,
+                            margin: EdgeInsets.only(top: 20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: kPrimaryColor,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                FaIcon(FontAwesomeIcons.solidRectangleList, size: 15, color: Colors.white),
+                                SizedBox(width: 20),
+                                Text("RAB", style: TextStyle(fontSize: 12, color: Colors.white)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
-            ),
-          ),
+            );
 
-         Container(
-           width: _width,
-           height: 70,
-           child: Row(
-             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-             children: [
-               Expanded(
-                 child: InkWell(
-                   onTap: (){Get.toNamed("/pengajuan_kredit");},
-                   child: Container(
-                     height: 70,
-                     margin: EdgeInsets.only(top: 20),
-                     decoration: BoxDecoration(
-                       borderRadius: BorderRadius.circular(15),
-                       color: kPrimaryColor,
-                     ),
-                     child: Row(
-                       mainAxisAlignment: MainAxisAlignment.center,
-                       children: [
-                         FaIcon(FontAwesomeIcons.solidCreditCard, size: 15, color: Colors.white),
-                         SizedBox(width: 20),
-                         Text("Pengajuan Kredit", style: TextStyle(fontSize: 12, color: Colors.white)),
-                       ],
-                     ),
-                   ),
-                 ),
-               ),
-
-              SizedBox(width: 15),
-
-              Expanded(
-                child:  InkWell(
-                  onTap: (){Get.toNamed("/rab");},
-                  child: Container(
-                    height: 70,
-                    margin: EdgeInsets.only(top: 20),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: kPrimaryColor,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        FaIcon(FontAwesomeIcons.solidRectangleList, size: 15, color: Colors.white),
-                        SizedBox(width: 20),
-                        Text("RAB", style: TextStyle(fontSize: 12, color: Colors.white)),
-                      ],
-                    ),
+          } else {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Text("Silahkan masuk terlebih dahulu untuk membuat RAB dan pengajuan kredit",
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 15),
                   ),
                 ),
-              ),
-             ],
-           ),
-         ),
-        ],
+              ],
+            );
+          }
+        },
       ),
     );
   }
 }
+
+//----------------------------------------------------------------------------
 
 class WidgetOption extends StatelessWidget {
   const WidgetOption({Key? key}) : super(key: key);
@@ -574,8 +700,7 @@ class WidgetOption extends StatelessWidget {
   }
 }
 
-
-
+//----------------------------------------------------------------------------
 
 class Menu extends StatelessWidget {
   Menu({Key? key}) : super(key: key);

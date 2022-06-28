@@ -24,8 +24,6 @@ class LoginController extends GetxController {
   var login = RxBool(false).obs;
   var imageData = ImageData().obs;
   var User = Credential().obs;
-  var address = 'Address'.obs;
-  var location = 'Location'.obs;
 
   //======== InfoController =================================
 

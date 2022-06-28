@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:krss/bloc/dashboard_controller.dart';
+import 'package:krss/root.dart';
 import 'package:krss/screen_desktop/mainpages/desktop_main_page.dart';
 import 'package:krss/screen_mobile/RAB/mobile_RAB.dart';
+import 'package:krss/screen_mobile/accountpages/components/registrasi.dart';
 import 'package:krss/screen_mobile/mainpages/mobile_main_page.dart';
 import 'package:krss/screen_mobile/pengajuan_kredit_pages/main_page_pengajuan.dart';
 import 'package:krss/screen_mobile/store_pages/location/map_screen.dart';
@@ -15,6 +18,7 @@ import 'bloc/login_controller.dart';
 void main() {
   runApp(const MyApp());
   Get.put(LoginController());
+  Get.put(DashboardController());
 }
 
 class MyApp extends StatelessWidget {
@@ -23,21 +27,25 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return GetMaterialApp(
       initialRoute: "/",
       debugShowCheckedModeBanner: false,
+      defaultTransition: Transition.rightToLeft,
+      transitionDuration: Duration(milliseconds: 180),
       getPages: [
         GetPage(name: '/', page: () => const MyApp()),
         GetPage(name: '/pengajuan_kredit', page: () => const CreditSubmission()),
         GetPage(name: '/rab', page: () => const RAB()),
         GetPage(name: '/store_page', page: () => const StorePage()),
         GetPage(name: '/map_screen', page: () => const MapScreen()),
+        GetPage(name: '/registration', page: () => const Registration()),
       ],
       title: 'KRSS',
       theme: theme(),
       home: Responsive(
-        Small: Mobile_MainPage(),
         Medium: Tablet_MainPage(),
+        Small: Mobile_MainPage(),
         Large: Desktop_MainPage(),
       ),
     );

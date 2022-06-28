@@ -33,10 +33,9 @@ class BottomBarNav extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
         items: <BottomNavigationBarItem> [
-          BottomNavigationBarItem(icon: Icon(Icons.category), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.category), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.category), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.category), label: ""),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: "Cart"),
+          BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: "Account"),
         ],
       ),
     );
