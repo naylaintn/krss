@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:krss/bloc/dashboard_controller.dart';
-import 'package:krss/root.dart';
 import 'package:krss/screen_desktop/mainpages/desktop_main_page.dart';
 import 'package:krss/screen_mobile/RAB/mobile_RAB.dart';
+import 'package:krss/screen_mobile/accountpages/components/avatar.dart';
+import 'package:krss/screen_mobile/accountpages/components/profile.dart';
 import 'package:krss/screen_mobile/accountpages/components/registrasi.dart';
 import 'package:krss/screen_mobile/mainpages/mobile_main_page.dart';
 import 'package:krss/screen_mobile/pengajuan_kredit_pages/main_page_pengajuan.dart';
@@ -40,6 +41,8 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/store_page', page: () => const StorePage()),
         GetPage(name: '/map_screen', page: () => const MapScreen()),
         GetPage(name: '/registration', page: () => const Registration()),
+        GetPage(name: '/edit_profile', page: () => const EditProfile()),
+        GetPage(name: '/avatar', page: () => const AvatarChange()),
       ],
       title: 'KRSS',
       theme: theme(),

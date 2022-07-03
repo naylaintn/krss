@@ -444,9 +444,11 @@ class _GetBottomSheetState extends State<GetBottomSheet> {
                         ),
                         onChanged: (value) {
                           resultTotalPrice = value;
+                          rab.price;
                         },
                         onSaved: (value){
                           resultTotalPrice = value!;
+                          rab.price;
                         },
                         validator: (value){
                           if(int.tryParse(value!) is int){

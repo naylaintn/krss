@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:krss/bloc/login_controller.dart';
+import 'package:krss/bloc/profile_controller.dart';
 import 'package:krss/model/user_data.dart';
 import 'package:krss/screen_mobile/accountpages/components/registrasi.dart';
 import 'package:krss/util/global_widget.dart';
@@ -33,9 +34,6 @@ class AccountLoginTrue extends StatelessWidget {
   Widget build(BuildContext context) {
 
     LoginController controller = Get.find();
-    UserModel userModel = UserModel();
-
-    userModel.userId = controller.User.value.userId;
 
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
@@ -64,9 +62,7 @@ class AccountHeader extends StatelessWidget {
   Widget build(BuildContext context) {
 
     LoginController controller = Get.find();
-    UserModel userModel = UserModel();
-
-    userModel.userId = controller.User.value.userId;
+    ProfileController profileController = Get.put(ProfileController());
 
     double _height = MediaQuery.of(context).size.height;
 
@@ -95,7 +91,9 @@ class AccountHeader extends StatelessWidget {
               Obx((){
                 if(controller.imageData.value.available==true){
                   return InkWell(
-                    onTap: (){},
+                    onTap: (){
+                      Get.toNamed("/avatar");
+                    },
                     child: CircleAvatar(
                       radius: 20,
                       child: ClipRRect(
@@ -105,7 +103,12 @@ class AccountHeader extends StatelessWidget {
                     ),
                   );
                 } else {
-                  return Icon(Icons.account_circle, size: 20, color: kPrimaryColor);
+                  return InkWell(
+                    onTap: (){
+                      Get.toNamed("/avatar");
+                    },
+                    child: Icon(Icons.account_circle, size: 35, color: kPrimaryColor),
+                  );
                 }
               }),
 
@@ -114,31 +117,25 @@ class AccountHeader extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Obx((){
-                    if(controller.User.value.name==true){
-                      return Text(controller.User.value.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor));
-                    } else {
-                      return Text("User Name", textAlign: TextAlign.left,
-                          maxLines: 2,
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor));
-                    }
-                  }),
+                  Text(profileController.profile.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor)),
 
-                  SizedBox(height: 10),
+                  SizedBox(height: 5),
 
                   Row(
                     children: [
-                      Icon(Icons.alternate_email, size: 13, color: Colors.grey,),
-                      Text(userModel.userId, style: TextStyle(fontSize: 13, color: Colors.grey)),
+                      Icon(Icons.email_rounded, size: 12, color: Colors.grey,),
+                      SizedBox(width: 10),
+                      Text(controller.check.value.userId, style: TextStyle(fontSize: 14, color: Colors.grey)),
                     ],
                   ),
 
-                  SizedBox(height: 10),
+                  SizedBox(height: 5),
 
                   Row(
                     children: [
-                      Icon(Icons.phone_android_rounded, size: 13, color: Colors.grey,),
-                      Text(controller.User.value.phoneNumber, style: TextStyle(fontSize: 13, color: Colors.grey)),
+                      Icon(Icons.phone_android_rounded, size: 12, color: Colors.grey,),
+                      SizedBox(width: 10),
+                      Text(profileController.profile.alias, style: TextStyle(fontSize: 14, color: Colors.grey)),
                     ],
                   ),
                 ],
@@ -146,7 +143,12 @@ class AccountHeader extends StatelessWidget {
             ],
           ),
 
-          Icon(Icons.edit, color: kTextColor, size: 18),
+          InkWell(
+            onTap: (){
+              Get.toNamed('/edit_profile');
+            },
+            child: Icon(Icons.edit, color: kTextColor, size: 18),
+          ),
         ],
       ),
     );

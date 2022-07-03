@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:krss/util/global_widget.dart';
 import 'package:krss/util/style.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -57,6 +60,7 @@ class _CreditFormState extends State<CreditForm> {
     UserDashboardController _userController = Get.put(UserDashboardController());
     var cred = _userController.credential;
     final ValueNotifier<DateTime?> dateSub = ValueNotifier(null);
+
 
     var newValue;
     const education = [
@@ -124,7 +128,58 @@ class _CreditFormState extends State<CreditForm> {
           SizedBox(height: 25),
 
           TextFormField(
-            controller: TextEditingController.fromValue(TextEditingValue(text: cred.value.phoneNumber, selection: TextSelection.collapsed(offset: cred.value.phoneNumber.length))),
+            controller: TextEditingController.fromValue(TextEditingValue(text: cred.value.idNumber, selection: TextSelection.collapsed(offset: cred.value.idNumber.length))),
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+              enabledBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(35)),
+                borderSide: BorderSide(color: kTextColor),
+                gapPadding: 10,
+              ),
+              focusedBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(35)),
+                borderSide: BorderSide(color: kTextColor),
+                gapPadding: 10,
+              ),
+              errorBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(35)),
+                borderSide: BorderSide(color: Colors.red),
+                gapPadding: 10,
+              ),
+              suffixIcon: Padding(
+                padding: EdgeInsets.fromLTRB(0, 20, 20, 20),
+                child: FaIcon(FontAwesomeIcons.idCard, size: 20),
+              ),
+              labelText: "Nomor KTP",
+              hintText: "Isi nomor KTP",
+              hintStyle: TextStyle(color:Colors.grey[400]),
+              //errorText: "Ketik nama anda",
+              border: const OutlineInputBorder(),
+            ),
+            onChanged: (value) {
+              cred.value.idNumber = value;
+            },
+            style: TextStyle(color:Colors.grey[900], fontSize: 14),
+            onSaved: (value){
+              cred.value.idNumber = value!;
+            },
+            validator: (value){
+              if(value!.isEmpty){
+                return "Isi nomor KTP";
+              } else {
+                return null;
+              }
+            },
+          ), //no.ktp
+
+          SizedBox(height: 15),
+
+          TextFormField(
+            controller: TextEditingController.fromValue(TextEditingValue(text: cred.value.name, selection: TextSelection.collapsed(offset: cred.value.name.length))),
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(horizontal: 20),
               enabledBorder: const OutlineInputBorder(
@@ -146,6 +201,158 @@ class _CreditFormState extends State<CreditForm> {
                 padding: EdgeInsets.fromLTRB(0, 20, 20, 20),
                 child: FaIcon(FontAwesomeIcons.user, size: 20),
               ),
+              labelText: "Nama Lengkap",
+              hintText: "Isi nama lengkap sesuai KTP",
+              hintStyle: TextStyle(color:Colors.grey[400]),
+              //errorText: "Ketik nama anda",
+              border: const OutlineInputBorder(),
+            ),
+            onChanged: (value) {
+              cred.value.name = value;
+            },
+            style: TextStyle(color:Colors.grey[900], fontSize: 14),
+            onSaved: (value){
+              cred.value.name = value!;
+            },
+            validator: (value){
+              if(value!.isEmpty){
+                return "Isi nama lengkap";
+              } else {
+                return null;
+              }
+            },
+          ), //nama lengkap
+
+          SizedBox(height: 15),
+
+          TextFormField(
+            controller: TextEditingController.fromValue(TextEditingValue(text: cred.value.pob, selection: TextSelection.collapsed(offset: cred.value.pob.length))),
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+              enabledBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(35)),
+                borderSide: BorderSide(color: kTextColor),
+                gapPadding: 10,
+              ),
+              focusedBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(35)),
+                borderSide: BorderSide(color: kTextColor),
+                gapPadding: 10,
+              ),
+              errorBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(35)),
+                borderSide: BorderSide(color: Colors.red),
+                gapPadding: 10,
+              ),
+              suffixIcon: Padding(
+                padding: EdgeInsets.fromLTRB(0, 20, 20, 20),
+                child: FaIcon(FontAwesomeIcons.mapLocation, size: 20),
+              ),
+              labelText: "Tempat Lahir",
+              hintText: "Isi tempat sesuai KTP",
+              hintStyle: TextStyle(color:Colors.grey[400]),
+              //errorText: "Ketik nama anda",
+              border: const OutlineInputBorder(),
+            ),
+            onChanged: (value) {
+              cred.value.pob = value;
+            },
+            style: TextStyle(color:Colors.grey[900], fontSize: 14),
+            onSaved: (value){
+              cred.value.pob = value!;
+            },
+            validator: (value){
+              if(value!.isEmpty){
+                return "Isi tempat lahir";
+              } else {
+                return null;
+              }
+            },
+          ), //tempat lahir
+
+          SizedBox(height: 15),
+
+          ValueListenableBuilder<DateTime?>(
+              valueListenable: dateSub,
+              builder: (context, dateVal, child) {
+                return InkWell(
+                  onTap: () async {
+                    DateTime? _date = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(1940),
+                        lastDate: DateTime.now(),
+                        currentDate: DateTime.now(),
+                        initialEntryMode: DatePickerEntryMode.calendar,
+                        initialDatePickerMode: DatePickerMode.day,
+                        builder: (context, child) {
+                          return Theme(
+                            data: Theme.of(context).copyWith(
+                                colorScheme: ColorScheme.fromSwatch(
+                                  primarySwatch: Colors.blueGrey,
+                                  accentColor: kPrimaryColor,
+                                  backgroundColor: Colors.lightBlue,
+                                  cardColor: Colors.white,
+                                )
+                            ),
+                            child: child!,
+                          );
+                        });
+                    dateSub.value = _date;
+                    dateVal = _date;
+                  },
+                  child: SizedBox(
+                    width: _width,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+
+                        DOB(
+                            dateVal != null ? convertDate(dateVal!) : ''
+                        ),
+
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: kPrimaryColor,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Center(
+                            child: Icon(Icons.calendar_today_rounded, color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+
+          SizedBox(height: 15),
+
+          TextFormField(
+            controller: TextEditingController.fromValue(TextEditingValue(text: cred.value.phoneNumber, selection: TextSelection.collapsed(offset: cred.value.phoneNumber.length))),
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+              enabledBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(35)),
+                borderSide: BorderSide(color: kTextColor),
+                gapPadding: 10,
+              ),
+              focusedBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(35)),
+                borderSide: BorderSide(color: kTextColor),
+                gapPadding: 10,
+              ),
+              errorBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(35)),
+                borderSide: BorderSide(color: Colors.red),
+                gapPadding: 10,
+              ),
+              suffixIcon: Padding(
+                padding: EdgeInsets.fromLTRB(0, 20, 20, 20),
+                child: FaIcon(FontAwesomeIcons.mobile, size: 20),
+              ),
               labelText: "Nomor Handphone",
               hintText: "Isi nomor HP aktif",
               hintStyle: TextStyle(color:Colors.grey[400]),
@@ -166,7 +373,7 @@ class _CreditFormState extends State<CreditForm> {
                 return null;
               }
             },
-          ),
+          ), //no.hp
 
           SizedBox(height: 15),
 
@@ -213,7 +420,7 @@ class _CreditFormState extends State<CreditForm> {
                 return null;
               }
             },
-          ),
+          ), //nama ibu kandung
 
           SizedBox(height: 15),
 
@@ -286,7 +493,7 @@ class _CreditFormState extends State<CreditForm> {
                 }).toList(),
               ),
             ),
-          ),
+          ), //pendidikan terakhir
 
           SizedBox(height: 15),
 
@@ -373,7 +580,7 @@ class _CreditFormState extends State<CreditForm> {
                 }).toList(),
               ),
             ),
-          ),
+          ), //pekerjaan
 
           SizedBox(height: 15),
 
@@ -420,7 +627,7 @@ class _CreditFormState extends State<CreditForm> {
                 return null;
               }
             },
-          ),
+          ), //pendapatan
 
           SizedBox(height: 15),
 
@@ -428,35 +635,64 @@ class _CreditFormState extends State<CreditForm> {
               valueListenable: dateSub,
               builder: (context, dateVal, child) {
                 return InkWell(
-                    onTap: () async {
-                      DateTime? date = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime(2050),
-                          currentDate: DateTime.now(),
-                          initialEntryMode: DatePickerEntryMode.calendar,
-                          initialDatePickerMode: DatePickerMode.day,
-                          builder: (context, child) {
-                            return Theme(
-                              data: Theme.of(context).copyWith(
-                                  colorScheme: ColorScheme.fromSwatch(
-                                    primarySwatch: Colors.blueGrey,
-                                    accentColor: kPrimaryColor,
-                                    backgroundColor: Colors.lightBlue,
-                                    cardColor: Colors.white,
-                                  )
-                              ),
-                              child: child!,
-                            );
-                          });
-                      dateSub.value = date;
-                    },
-                    child: buildDateTimePicker(
-                        dateVal != null ? convertDate(dateVal) : 'Tanggal Penyelesaian Pembangunan Rumah'));
-              }),
+                  onTap: () async {
+                    DateTime? _date = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2050),
+                        currentDate: DateTime.now(),
+                        initialEntryMode: DatePickerEntryMode.calendar,
+                        initialDatePickerMode: DatePickerMode.day,
+                        builder: (context, child) {
+                          return Theme(
+                            data: Theme.of(context).copyWith(
+                                colorScheme: ColorScheme.fromSwatch(
+                                  primarySwatch: Colors.blueGrey,
+                                  accentColor: kPrimaryColor,
+                                  backgroundColor: Colors.lightBlue,
+                                  cardColor: Colors.white,
+                                )
+                            ),
+                            child: child!,
+                          );
+                        });
+                    dateSub.value = _date;
+                    dateVal = _date;
+                  },
+                  child: SizedBox(
+                    width: _width,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
 
-          SizedBox(height: 15),
+                        buildDateTimePicker(
+                            dateVal != null ? convertDate(dateVal!) : ''
+                        ),
+
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: kPrimaryColor,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Center(
+                            child: Icon(Icons.calendar_today_rounded, color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }), //tanggal penyelesaian bangunan
+
+          SizedBox(height: 30),
+
+          DefaultButton(
+              text: 'Submit',
+              press: (){}
+          ),
         ],
       ),
     );
@@ -469,22 +705,119 @@ class _CreditFormState extends State<CreditForm> {
   }
 
   Widget buildDateTimePicker(String data) {
+
+    UserDashboardController _userController = Get.put(UserDashboardController());
+    var cred = _userController.credential;
+    TextEditingController date = TextEditingController.fromValue(
+        TextEditingValue(text: cred.value.status, selection: TextSelection.collapsed(offset: cred.value.status.length))
+    );
+
+    date.text = '${data}';
+
     double _width = MediaQuery.of(context).size.width;
-    return Container(
-      width: _width,
-      height: 65,
-      child: ListTile(
-        contentPadding: EdgeInsets.only(left: 20, right: 15, top: 5, bottom: 5),
-        textColor: kTextColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(35),
-          side: const BorderSide(color: kTextColor),
+
+    return SizedBox(
+      width: _width*0.7,
+      height: 60,
+      child: TextFormField(
+        controller: date,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          enabledBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(35)),
+            borderSide: BorderSide(color: kTextColor),
+            gapPadding: 10,
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(35)),
+            borderSide: BorderSide(color: kTextColor),
+            gapPadding: 10,
+          ),
+          errorBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(35)),
+            borderSide: BorderSide(color: Colors.red),
+            gapPadding: 10,
+          ),
+          labelText: "Tanggal Penyelesaian Bangunan",
+          hintText: "Isi tanggal rencana penyelesaian bangunan",
+          hintStyle: TextStyle(color:Colors.grey[400]),
+          border: const OutlineInputBorder(),
         ),
-        title: Text(data, style: TextStyle(color: data.isDateTime ? kTextColor : Colors.grey[600], fontSize: 14)),
-        trailing: Icon(
-          Icons.calendar_today,
-          color: Colors.grey,
+        onChanged: (value) {
+          data = value;
+          cred.value.status;
+        },
+        style: TextStyle(color:Colors.grey[900], fontSize: 14),
+        onSaved: (value){
+          data = value!;
+          cred.value.status;
+        },
+        validator: (value){
+          if(value!.isEmpty){
+            return "Pilih tanggal disamping";
+          } else {
+            return null;
+          }
+        },
+      ),
+    );
+  }
+
+  Widget DOB(String data){
+
+    UserDashboardController _userController = Get.put(UserDashboardController());
+    var cred = _userController.credential;
+    TextEditingController date = TextEditingController.fromValue(
+        TextEditingValue(text: cred.value.dob, selection: TextSelection.collapsed(offset: cred.value.dob.length))
+    );
+
+    date.text = '${data}';
+
+    double _width = MediaQuery.of(context).size.width;
+
+    return SizedBox(
+      width: _width*0.7,
+      height: 60,
+      child: TextFormField(
+        controller: date,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          enabledBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(35)),
+            borderSide: BorderSide(color: kTextColor),
+            gapPadding: 10,
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(35)),
+            borderSide: BorderSide(color: kTextColor),
+            gapPadding: 10,
+          ),
+          errorBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(35)),
+            borderSide: BorderSide(color: Colors.red),
+            gapPadding: 10,
+          ),
+          labelText: "Tanggal Lahir",
+          hintText: "Isi tanggal lahir",
+          hintStyle: TextStyle(color:Colors.grey[400]),
+          border: const OutlineInputBorder(),
         ),
+        onChanged: (value) {
+          data = value;
+          cred.value.status;
+        },
+        style: TextStyle(color:Colors.grey[900], fontSize: 14),
+        onSaved: (value){
+          data = value!;
+          cred.value.status;
+        },
+        validator: (value){
+          if(value!.isEmpty){
+            return "Pilih tanggal disamping";
+          } else {
+            return null;
+          }
+        },
       ),
     );
   }

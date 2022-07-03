@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:krss/model/RAB.dart';
-import 'package:krss/model/credential.dart';
 import 'package:get/get.dart';
 import '../model/response.dart';
 import '../util/constants.dart' as constants;
@@ -14,7 +13,6 @@ class RABController extends GetxController{
   final _ph = constants.ph;
   final ph_domain = constants.domain;
 
-  var User = Credential().obs;
   var rabList = <RABModel>[].obs;
 
   RABModel RAB = RABModel();

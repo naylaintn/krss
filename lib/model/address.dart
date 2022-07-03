@@ -13,7 +13,6 @@ class Address {
   final String addressL1;
   final String addressL2;
   final String addressL3;
-
   final String addressL4;
   final String addressL5;
   final String addressL6;

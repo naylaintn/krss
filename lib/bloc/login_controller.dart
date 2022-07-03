@@ -83,7 +83,7 @@ class LoginController extends GetxController {
 
       loginState.value = 1;
 
-      //print("response : ${response.body}");
+      print("response : ${response.body}");
 
       if (response.statusCode == 200) {
         check.value = CheckPassword.fromJson(jsonDecode(response.body));
@@ -120,7 +120,7 @@ class LoginController extends GetxController {
       loginState.value = 5;
 
       views.value = "SHOW_LOGIN_ERROR";
-      //print(e.toString());
+      print(e.toString());
 
     }
 
