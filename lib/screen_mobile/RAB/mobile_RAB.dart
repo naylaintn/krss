@@ -212,40 +212,67 @@ class _GetBottomSheetState extends State<GetBottomSheet> {
                         padding: EdgeInsets.only(left: 10),
                         child: Text('Item Bangunan', style: TextStyle(fontSize: 14, color: Colors.grey[600])),
                       ),
-                      onChanged: (changedValue) {
+                      onChanged: (changedValue){
                         newValue = changedValue!;
-                        setState(() {
+                        if(newValue == 'Baja'){
+                          rab.name=='Baja';
+                        } else if(newValue == 'Bata'){
+                          rab.name=='Bata';
+                        } else if(newValue == 'Fondasi'){
+                          rab.name=='Fondasi';
+                        } else if(newValue == 'Genteng'){
+                          rab.name=='Genteng';
+                        } else if(newValue == 'Kaca'){
+                          rab.name=='Kaca';
+                        } else if(newValue == 'Kayu/Bambu'){
+                          rab.name=='Kayu/Bambu';
+                        } else if(newValue == 'Keramik'){
+                          rab.name=='Keramik';
+                        } else if(newValue == 'Kerikil/Split'){
+                          rab.name=='Kerikil/Split';
+                        } else if(newValue == 'Metal'){
+                          rab.name=='Metal';
+                        } else if(newValue == 'Pasir'){
+                          rab.name=='Pasir';
+                        } else if(newValue == 'Semen'){
+                          rab.name=='Semen';
+                        } else {
+                          rab.name=='';
+                        }
 
-                          if(newValue == 'Baja'){
-                            rab.name=='Baja';
-                          } else if(newValue == 'Bata'){
-                            rab.name=='Bata';
-                          } else if(newValue == 'Fondasi'){
-                            rab.name=='Fondasi';
-                          } else if(newValue == 'Genteng'){
-                            rab.name=='Genteng';
-                          } else if(newValue == 'Kaca'){
-                            rab.name=='Kaca';
-                          } else if(newValue == 'Kayu/Bambu'){
-                            rab.name=='Kayu/Bambu';
-                          } else if(newValue == 'Keramik'){
-                            rab.name=='Keramik';
-                          } else if(newValue == 'Kerikil/Split'){
-                            rab.name=='Kerikil/Split';
-                          } else if(newValue == 'Metal'){
-                            rab.name=='Metal';
-                          } else if(newValue == 'Pasir'){
-                            rab.name=='Pasir';
-                          } else if(newValue == 'Semen'){
-                            rab.name=='Semen';
-                          } else {
-                            rab.name=='';
-                          }
+                        newValue;
+                        print(newValue);
+                      },
+                      onSaved: (changedValue) {
+                        newValue = changedValue!;
+                        if(newValue == 'Baja'){
+                          rab.name=='Baja';
+                        } else if(newValue == 'Bata'){
+                          rab.name=='Bata';
+                        } else if(newValue == 'Fondasi'){
+                          rab.name=='Fondasi';
+                        } else if(newValue == 'Genteng'){
+                          rab.name=='Genteng';
+                        } else if(newValue == 'Kaca'){
+                          rab.name=='Kaca';
+                        } else if(newValue == 'Kayu/Bambu'){
+                          rab.name=='Kayu/Bambu';
+                        } else if(newValue == 'Keramik'){
+                          rab.name=='Keramik';
+                        } else if(newValue == 'Kerikil/Split'){
+                          rab.name=='Kerikil/Split';
+                        } else if(newValue == 'Metal'){
+                          rab.name=='Metal';
+                        } else if(newValue == 'Pasir'){
+                          rab.name=='Pasir';
+                        } else if(newValue == 'Semen'){
+                          rab.name=='Semen';
+                        } else {
+                          rab.name=='';
+                        }
 
-                          newValue;
-                          print(newValue);
-
-                        });
+                        newValue;
+                        print(newValue);
                       },
                       value: newValue,
                       validator: (value) => value!.isEmpty ? 'Pilih item bangunan' : null,
