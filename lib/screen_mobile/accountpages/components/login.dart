@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../bloc/login_controller.dart';
+import '../../../bloc/user_controller.dart';
 import '../../../util/constants.dart';
 import '../../../util/global_widget.dart';
 import '../../../util/style.dart';
@@ -16,7 +17,8 @@ class SignForm extends StatefulWidget {
 
 class _SignFormState extends State<SignForm> {
 
-  final LoginController _authController = Get.put(LoginController());
+  LoginController _authController = Get.find();
+  UserDashboardController userDashboardController = Get.find();
 
   final _formKey = GlobalKey<FormState>();
   String email = "";
@@ -69,6 +71,8 @@ class _SignFormState extends State<SignForm> {
             press: () {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
+
+                userDashboardController.getUser(_authController.check.value.userId, 0, 1);
                 _authController.submitLogin(email, password, "ROLE_USER");
 
                 Get.off(() => Mobile_MainPage());

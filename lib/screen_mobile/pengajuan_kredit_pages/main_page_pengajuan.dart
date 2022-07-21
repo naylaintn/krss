@@ -691,7 +691,9 @@ class _CreditFormState extends State<CreditForm> {
 
           DefaultButton(
               text: 'Submit',
-              press: (){}
+              press: (){
+                Get.offAllNamed('/home');
+              }
           ),
         ],
       ),
@@ -706,7 +708,7 @@ class _CreditFormState extends State<CreditForm> {
 
   Widget buildDateTimePicker(String data) {
 
-    UserDashboardController _userController = Get.put(UserDashboardController());
+    UserDashboardController _userController = Get.find();
     var cred = _userController.credential;
     TextEditingController date = TextEditingController.fromValue(
         TextEditingValue(text: cred.value.status, selection: TextSelection.collapsed(offset: cred.value.status.length))
@@ -765,7 +767,7 @@ class _CreditFormState extends State<CreditForm> {
 
   Widget DOB(String data){
 
-    UserDashboardController _userController = Get.put(UserDashboardController());
+    UserDashboardController _userController = Get.find();
     var cred = _userController.credential;
     TextEditingController date = TextEditingController.fromValue(
         TextEditingValue(text: cred.value.dob, selection: TextSelection.collapsed(offset: cred.value.dob.length))

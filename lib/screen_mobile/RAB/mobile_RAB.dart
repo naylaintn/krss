@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:krss/bloc/login_controller.dart';
 import 'package:krss/bloc/rab_controller.dart';
 import 'package:krss/model/RAB.dart';
 import 'package:krss/util/global_widget.dart';
+import 'package:intl/intl.dart';
 
 import '../../util/style.dart';
 
@@ -13,6 +15,10 @@ class RAB extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    RABController controller = Get.find();
+    controller.getRABList();
+
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
 
@@ -20,15 +26,79 @@ class RAB extends StatelessWidget {
       child: Scaffold(
         backgroundColor: scaffoldColor,
         appBar: AppBar(
-          title: Text("Rencana Anggaran Biaya (RAB)", style: TextStyle(color: kTextColor, fontSize: 18)),
         ),
         body: Container(
-          width: _width,
           height: _height,
+          color: scaffoldColor,
           child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             children: [
-              RABTable(),
+              Column(
+                children: [
+                  SizedBox(
+                    width: _width,
+                    height: 60,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: Text("Rencana Anggaran Biaya", maxLines:2, textAlign: TextAlign.left, style: TextStyle(color: kTextColor, fontSize: 18, fontWeight: FontWeight.w900)),
+                        ),
+                        GestureDetector(
+                          onTap: (){
+                            Get.toNamed('/rab/rab_form');
+                          },
+                          child: SizedBox(
+                            width: 120,
+                            height: 50,
+                            child: Card(
+                              color: kPrimaryColor,
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(35),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  FaIcon(FontAwesomeIcons.circlePlus, size: 12, color: Colors.white),
+                                  SizedBox(width: 10),
+                                  Text("Tambah Item", style: TextStyle(fontSize: 12, color: Colors.white)),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  rabTable(_width, _height),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        bottomNavigationBar: Container(
+          height: 80,
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 10,
+                  color: Colors.black.withOpacity(0.2),
+                ),
+              ]
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("Total", style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
+              Text("Rp20.000", style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
             ],
           ),
         ),
@@ -37,133 +107,106 @@ class RAB extends StatelessWidget {
   }
 }
 
-class RABTable extends StatelessWidget {
-  const RABTable({Key? key}) : super(key: key);
+Widget rabTable(double _width, double _height){
 
-  @override
-  Widget build(BuildContext context) {
+  // RABController controller = Get.find();
+  // final currencyFormatter = NumberFormat('#,##0', 'ID');
 
-    RABController controller = Get.put(RABController());
-    controller.getRABList(controller.RAB.id);
-
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
-
-    return Column(
-      children: [
-        Container(
-          width: _width,
-          height: 70,
-          decoration: BoxDecoration(
-            color: kSecondaryColor,
-            border: Border(
-                top: BorderSide(color: Colors.grey),
-                bottom: BorderSide(color: Colors.grey)
+  return SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    child: SizedBox(
+      width: _width*1.5,
+      child: Card(
+        child: DataTable(
+          columns: const <DataColumn>[
+            DataColumn(
+              label: Text("Nama", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
             ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: _width*0.2,
-                child: Text("Item", textAlign: TextAlign.center, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-              ),
-
-              SizedBox(
-                width: _width*0.2,
-                child: Text("Harga Satuan", textAlign: TextAlign.center, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-              ),
-
-              SizedBox(
-                width: _width*0.15,
-                child: Text("Qty.", textAlign: TextAlign.center, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-              ),
-
-              SizedBox(
-                width: _width*0.25,
-                child: Text("Total", textAlign: TextAlign.center, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-              ),
-            ],
-          ),
-        ),
-
-        SizedBox(height: 10),
-
-        Obx((){
-          return Column(
-            children: controller.rabList.map((e) => listCard(e, _width, _height)).toList(),
-          );
-        }),
-
-        GestureDetector(
-          onTap: (){
-            Get.bottomSheet(
-              Container(
-                width: _width,
-                height: _height*0.7,
-                padding: EdgeInsets.fromLTRB(10, 30, 10, 20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(35), topLeft: Radius.circular(35)),
-                ),
-                child: SingleChildScrollView(
-                  child: GetBottomSheet(),
-                ),
-              ),
-            );
-          },
-          child: SizedBox(
-            width: _width,
-            height: 50,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FaIcon(FontAwesomeIcons.circlePlus, size: 15, color: kPrimaryColor),
-                SizedBox(width: 10),
-                Text("Tambah Item", style: TextStyle(fontSize: 15, color: kPrimaryColor)),
-              ],
+            DataColumn(
+              label: Text("Harga", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
             ),
-          ),
+            DataColumn(
+              label: Text("Unit", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+            ),
+            DataColumn(
+              label: Text("Total", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+            ),
+            DataColumn(
+              label: Text("", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+            ),
+          ],
+          rows: List<DataRow>.generate(
+              items.length,
+                  (int index) => DataRow(
+                color: MaterialStateProperty.resolveWith<Color?>(
+                        (Set<MaterialState> states) {
+                      if (index.isEven) {
+                        return kSecondaryLightColor;
+                      }
+                      return null;
+                    }),
+                cells: <DataCell>[
+                  DataCell(Text(items[index].item, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400))),
+                  DataCell(Text(items[index].value, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400))),
+                  DataCell(Text(items[index].qty, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400))),
+                  DataCell(Text(items[index].total, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400))),
+                  DataCell(
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: (){},
+                          splashRadius: 10,
+                          icon: const Icon(Icons.edit, size: 12, color: kTextColor,),
+                        ),
+                        IconButton(
+                          onPressed: (){},
+                          splashRadius: 10,
+                          icon: const Icon(Icons.delete, size: 12, color: Colors.red,),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              )),
         ),
-      ],
-    );
-  }
+      ),
+    ),
+  );
 }
-
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-class GetBottomSheet extends StatefulWidget {
-  const GetBottomSheet({Key? key}) : super(key: key);
+class RABForm extends StatefulWidget {
+  const RABForm({Key? key}) : super(key: key);
 
   @override
-  State<GetBottomSheet> createState() => _GetBottomSheetState();
+  State<RABForm> createState() => _RABFormState();
 }
 
-class _GetBottomSheetState extends State<GetBottomSheet> {
-
-  final _formKey = GlobalKey<FormState>();
-  final RABController controller = Get.put(RABController());
-  String resultTotalPrice = "0";
+class _RABFormState extends State<RABForm> {
 
   @override
   Widget build(BuildContext context) {
 
-    RABModel rab = controller.RAB;
+    final _formKey = GlobalKey<FormState>();
+    final LoginController loginController = Get.find();
+    final RABController controller = Get.find();
+
+    CostItem rab = CostItem();
 
     TextEditingController totalPrice = TextEditingController.fromValue(
-        TextEditingValue(text: rab.price.toString(), selection: TextSelection.collapsed(offset: rab.price.toString().length))
+        TextEditingValue(text: rab.total.toString(), selection: TextSelection.collapsed(offset: rab.total.toString().length))
     );
 
     TextEditingController unitPrice = TextEditingController.fromValue(
-        TextEditingValue(text: rab.oldPrice.toString(), selection: TextSelection.collapsed(offset: rab.oldPrice.toString().length))
+        TextEditingValue(text: rab.value.toString(), selection: TextSelection.collapsed(offset: rab.value.toString().length))
     );
 
     TextEditingController Qty = TextEditingController.fromValue(
-        TextEditingValue(text: rab.number, selection: TextSelection.collapsed(offset: rab.number.length))
+        TextEditingValue(text: rab.param.toString(), selection: TextSelection.collapsed(offset: rab.param.toString().length))
     );
 
+    String resultTotalPrice = "0";
     totalPrice.text = '${resultTotalPrice}';
     print("address in my view is"+totalPrice.text);
 
@@ -174,410 +217,508 @@ class _GetBottomSheetState extends State<GetBottomSheet> {
       'Kerikil/Split', 'Metal', 'Pasir', 'Semen',
     ];
 
+    var newValue2;
+    const unit = [
+      'kg', 'gr', 'oz',
+    ];
+
     double _width = MediaQuery.of(context).size.width;
-    // double _height = MediaQuery.of(context).size.height;
 
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme: const IconThemeData(color: kTextColor),
+          elevation: 0,
+          title: Text("RAB Form", style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: kTextColor)),
+        ),
+        body: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          children: [
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: _width,
+                    height: 100,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text("Item Bangunan", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: kPrimaryColor)),
+                        SizedBox(height: 5),
+                        Container(
+                          width: _width,
+                          height: 50,
+                          padding: EdgeInsets.only(left: 10, right: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            border: Border.all(color: kTextColor),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Center(
+                            child: DropdownButtonFormField<String>(
+                              isExpanded: true,
+                              decoration: InputDecoration.collapsed(hintText: ''),
+                              borderRadius: BorderRadius.circular(35),
+                              menuMaxHeight: 300,
+                              iconSize: 20,
+                              iconEnabledColor: Colors.grey,
+                              hint: Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Text('Item Bangunan', style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+                              ),
+                              onChanged: (changedValue){
+                                newValue = changedValue!;
+                                if(newValue == 'Baja'){
+                                  rab.name=='Baja';
+                                } else if(newValue == 'Bata'){
+                                  rab.name=='Bata';
+                                } else if(newValue == 'Fondasi'){
+                                  rab.name=='Fondasi';
+                                } else if(newValue == 'Genteng'){
+                                  rab.name=='Genteng';
+                                } else if(newValue == 'Kaca'){
+                                  rab.name=='Kaca';
+                                } else if(newValue == 'Kayu/Bambu'){
+                                  rab.name=='Kayu/Bambu';
+                                } else if(newValue == 'Keramik'){
+                                  rab.name=='Keramik';
+                                } else if(newValue == 'Kerikil/Split'){
+                                  rab.name=='Kerikil/Split';
+                                } else if(newValue == 'Metal'){
+                                  rab.name=='Metal';
+                                } else if(newValue == 'Pasir'){
+                                  rab.name=='Pasir';
+                                } else if(newValue == 'Semen'){
+                                  rab.name=='Semen';
+                                } else {
+                                  rab.name=='';
+                                }
 
-          SizedBox(
-            width: _width,
-            height: 100,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text("Item Bangunan", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: kPrimaryColor)),
-                SizedBox(height: 5),
-                Container(
-                  width: _width,
-                  height: 50,
-                  padding: EdgeInsets.only(left: 10, right: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    border: Border.all(color: kTextColor),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Center(
-                    child: DropdownButtonFormField<String>(
-                      isExpanded: true,
-                      decoration: InputDecoration.collapsed(hintText: ''),
-                      borderRadius: BorderRadius.circular(35),
-                      menuMaxHeight: 300,
-                      iconSize: 20,
-                      iconEnabledColor: Colors.grey,
-                      hint: Padding(
-                        padding: EdgeInsets.only(left: 10),
-                        child: Text('Item Bangunan', style: TextStyle(fontSize: 14, color: Colors.grey[600])),
-                      ),
-                      onChanged: (changedValue){
-                        newValue = changedValue!;
-                        if(newValue == 'Baja'){
-                          rab.name=='Baja';
-                        } else if(newValue == 'Bata'){
-                          rab.name=='Bata';
-                        } else if(newValue == 'Fondasi'){
-                          rab.name=='Fondasi';
-                        } else if(newValue == 'Genteng'){
-                          rab.name=='Genteng';
-                        } else if(newValue == 'Kaca'){
-                          rab.name=='Kaca';
-                        } else if(newValue == 'Kayu/Bambu'){
-                          rab.name=='Kayu/Bambu';
-                        } else if(newValue == 'Keramik'){
-                          rab.name=='Keramik';
-                        } else if(newValue == 'Kerikil/Split'){
-                          rab.name=='Kerikil/Split';
-                        } else if(newValue == 'Metal'){
-                          rab.name=='Metal';
-                        } else if(newValue == 'Pasir'){
-                          rab.name=='Pasir';
-                        } else if(newValue == 'Semen'){
-                          rab.name=='Semen';
-                        } else {
-                          rab.name=='';
-                        }
+                                newValue;
+                                print(newValue);
+                              },
+                              onSaved: (changedValue) {
+                                newValue = changedValue!;
+                                if(newValue == 'Baja'){
+                                  rab.name=='Baja';
+                                } else if(newValue == 'Bata'){
+                                  rab.name=='Bata';
+                                } else if(newValue == 'Fondasi'){
+                                  rab.name=='Fondasi';
+                                } else if(newValue == 'Genteng'){
+                                  rab.name=='Genteng';
+                                } else if(newValue == 'Kaca'){
+                                  rab.name=='Kaca';
+                                } else if(newValue == 'Kayu/Bambu'){
+                                  rab.name=='Kayu/Bambu';
+                                } else if(newValue == 'Keramik'){
+                                  rab.name=='Keramik';
+                                } else if(newValue == 'Kerikil/Split'){
+                                  rab.name=='Kerikil/Split';
+                                } else if(newValue == 'Metal'){
+                                  rab.name=='Metal';
+                                } else if(newValue == 'Pasir'){
+                                  rab.name=='Pasir';
+                                } else if(newValue == 'Semen'){
+                                  rab.name=='Semen';
+                                } else {
+                                  rab.name=='';
+                                }
 
-                        newValue;
-                        print(newValue);
-                      },
-                      onSaved: (changedValue) {
-                        newValue = changedValue!;
-                        if(newValue == 'Baja'){
-                          rab.name=='Baja';
-                        } else if(newValue == 'Bata'){
-                          rab.name=='Bata';
-                        } else if(newValue == 'Fondasi'){
-                          rab.name=='Fondasi';
-                        } else if(newValue == 'Genteng'){
-                          rab.name=='Genteng';
-                        } else if(newValue == 'Kaca'){
-                          rab.name=='Kaca';
-                        } else if(newValue == 'Kayu/Bambu'){
-                          rab.name=='Kayu/Bambu';
-                        } else if(newValue == 'Keramik'){
-                          rab.name=='Keramik';
-                        } else if(newValue == 'Kerikil/Split'){
-                          rab.name=='Kerikil/Split';
-                        } else if(newValue == 'Metal'){
-                          rab.name=='Metal';
-                        } else if(newValue == 'Pasir'){
-                          rab.name=='Pasir';
-                        } else if(newValue == 'Semen'){
-                          rab.name=='Semen';
-                        } else {
-                          rab.name=='';
-                        }
-
-                        newValue;
-                        print(newValue);
-                      },
-                      value: newValue,
-                      validator: (value) => value!.isEmpty ? 'Pilih item bangunan' : null,
-                      items: item.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Container(
-                            padding: EdgeInsets.only(left: 10),
-                            width: _width,
-                            child: Row(
-                              children: [
-                                Text(value),
-                              ],
+                                newValue;
+                                print(newValue);
+                              },
+                              value: newValue,
+                              validator: (value) => value!.isEmpty ? 'Pilih item bangunan' : null,
+                              items: item.map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Container(
+                                    padding: EdgeInsets.only(left: 10),
+                                    width: _width,
+                                    child: Row(
+                                      children: [
+                                        Text(value),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
                             ),
                           ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+
+                  SizedBox(
+                    width: _width,
+                    height: 100,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text("Harga Satuan", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: kPrimaryColor)),
+                        SizedBox(height: 5),
+                        SizedBox(
+                          height: 70,
+                          child: TextFormField(
+                            controller: unitPrice,
+                            style: TextStyle(color:Colors.grey[900], fontSize: 14),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                              border: const OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(15)),
+                                borderSide: BorderSide(color: kTextColor),
+                                gapPadding: 10,
+                              ),
+                              enabledBorder: const OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(15)),
+                                borderSide: BorderSide(color: kTextColor),
+                                gapPadding: 10,
+                              ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(15)),
+                                borderSide: BorderSide(color: kTextColor),
+                                gapPadding: 10,
+                              ),
+                              errorBorder: const OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(15)),
+                                borderSide: BorderSide(color: Colors.red),
+                                gapPadding: 10,
+                              ),
+                            ),
+                            onChanged: (value) {
+                              if(value.isNum){
+                                rab.value =
+                                    int.parse(value);
+                              }
+                            },
+                            onSaved: (value){
+                              if(value!.isNum){
+                                rab.value =
+                                    int.parse(value);
+                              }
+                            },
+                            validator: (value){
+                              if(int.parse(value!) is int){
+                                return null;
+                              } else {
+                                return "Masukkan harga satuan";
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+
+                  SizedBox(
+                    width: _width,
+                    height: 100,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text("Kuantitas", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: kPrimaryColor)),
+                        SizedBox(height: 5),
+                        SizedBox(
+                          height: 70,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Flexible(
+                                child: SizedBox(
+                                  height: 50,
+                                  child: TextFormField(
+                                    controller: Qty,
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
+                                    decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                                      border: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                                        borderSide: BorderSide(color: kTextColor),
+                                        gapPadding: 10,
+                                      ),
+                                      enabledBorder: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                                        borderSide: BorderSide(color: kTextColor),
+                                        gapPadding: 10,
+                                      ),
+                                      focusedBorder: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                                        borderSide: BorderSide(color: kTextColor),
+                                        gapPadding: 10,
+                                      ),
+                                      errorBorder: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                                        borderSide: BorderSide(color: Colors.red),
+                                        gapPadding: 10,
+                                      ),
+                                    ),
+                                    onChanged: (value) {
+                                      rab.number = value;
+                                    },
+                                    style: TextStyle(color:Colors.grey[900], fontSize: 14),
+                                    onSaved: (value){
+                                      rab.number = value!;
+                                    },
+                                    validator: (value){
+                                      if(value!.isEmpty){
+                                        return "Masukkan kuantitas item";
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox(width: 10),
+
+                              Container(
+                                width: _width*0.25,
+                                height: 50,
+                                padding: EdgeInsets.only(left: 10, right: 20),
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  border: Border.all(color: kTextColor),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Center(
+                                  child: DropdownButtonFormField<String>(
+                                    isExpanded: true,
+                                    decoration: InputDecoration.collapsed(hintText: ''),
+                                    borderRadius: BorderRadius.circular(35),
+                                    menuMaxHeight: 300,
+                                    iconSize: 20,
+                                    iconEnabledColor: Colors.grey,
+                                    hint: Padding(
+                                      padding: EdgeInsets.only(left: 10),
+                                      child: Text('Unit', style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+                                    ),
+                                    onChanged: (changedValue){
+                                      newValue2 = changedValue!;
+                                      if(newValue2 == 'kg'){
+                                        rab.unit=='kg';
+                                      } else if(newValue2 == 'gr'){
+                                        rab.unit=='gr';
+                                      } else if(newValue2 == 'oz'){
+                                        rab.unit=='oz';
+                                      } else {
+                                        rab.name=='';
+                                      }
+                                      newValue2;
+                                      print(newValue);
+                                    },
+                                    onSaved: (changedValue) {
+                                      newValue2 = changedValue!;
+                                      if(newValue2 == 'kg'){
+                                        rab.unit=='kg';
+                                      } else if(newValue2 == 'gr'){
+                                        rab.unit=='gr';
+                                      } else if(newValue2 == 'oz'){
+                                        rab.unit=='oz';
+                                      } else {
+                                        rab.name=='';
+                                      }
+                                      newValue2;
+                                      print(newValue);
+                                    },
+                                    value: newValue2,
+                                    validator: (value) => value!.isEmpty ? 'Pilih unit' : null,
+                                    items: unit.map((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Container(
+                                          padding: EdgeInsets.only(left: 10),
+                                          width: _width,
+                                          child: Row(
+                                            children: [
+                                              Text(value),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+
+                  SizedBox(
+                    width: _width,
+                    height: 100,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text("Total Harga", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: kPrimaryColor)),
+                        SizedBox(height: 5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Flexible(
+                              child: SizedBox(
+                                width: _width*0.55,
+                                height: 70,
+                                child: TextFormField(
+                                  controller: totalPrice,
+                                  style: TextStyle(color:Colors.grey[900], fontSize: 14),
+                                  keyboardType: TextInputType.none,
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                                    border: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                                      borderSide: BorderSide(color: kTextColor),
+                                      gapPadding: 10,
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                                      borderSide: BorderSide(color: kTextColor),
+                                      gapPadding: 10,
+                                    ),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                                      borderSide: BorderSide(color: kTextColor),
+                                      gapPadding: 10,
+                                    ),
+                                    errorBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                                      borderSide: BorderSide(color: Colors.red),
+                                      gapPadding: 10,
+                                    ),
+                                  ),
+                                  onChanged: (value) {
+                                    resultTotalPrice = value;
+                                    rab.total;
+                                  },
+                                  onSaved: (value){
+                                    resultTotalPrice = value!;
+                                    rab.total;
+                                  },
+                                  validator: (value){
+                                    if(int.tryParse(value!) is int){
+                                      return null;
+                                    } else {
+                                      return "Tekan tombol disamping";
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+
+                            GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  int totalPriceNumb = (int.parse(unitPrice.text) * int.parse(Qty.text));
+                                  resultTotalPrice = totalPriceNumb.toString();
+                                });
+                              },
+                              child: Container(
+                                width: _width*0.3,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: kSecondaryColor,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Center(
+                                  child: Text("TOTAL HARGA", style: TextStyle(fontWeight: FontWeight.w600, color: kPrimaryColor, fontSize: 15)),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  DefaultButton(
+                    text: 'Simpan',
+                    press: (){
+                      if(_formKey.currentState!.validate()) {
+                        _formKey.currentState!.save();
+
+                        rab.userId = loginController.check.value.userId;
+                        controller.costItem = rab;
+
+                        controller.saveRAB();
+
+                        Get.snackbar(
+                          "Sukses",
+                          'Data RAB berhasil ditambahkan',
+                          snackPosition: SnackPosition.TOP,
+                          backgroundColor: Colors.white,
+                          instantInit: false,
                         );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
 
-
-          SizedBox(
-            width: _width,
-            height: 100,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text("Harga Satuan", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: kPrimaryColor)),
-                SizedBox(height: 5),
-                SizedBox(
-                  height: 70,
-                  child: TextFormField(
-                    controller: unitPrice,
-                    style: TextStyle(color:Colors.grey[900], fontSize: 14),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        borderSide: BorderSide(color: kTextColor),
-                        gapPadding: 10,
-                      ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        borderSide: BorderSide(color: kTextColor),
-                        gapPadding: 10,
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        borderSide: BorderSide(color: kTextColor),
-                        gapPadding: 10,
-                      ),
-                      errorBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        borderSide: BorderSide(color: Colors.red),
-                        gapPadding: 10,
-                      ),
-                    ),
-                    onChanged: (value) {
-                      if(value.isNum){
-                        rab.oldPrice =
-                        int.tryParse(value)!;
-                      }
-                    },
-                    onSaved: (value){
-                      if(value!.isNum){
-                        rab.oldPrice =
-                        int.tryParse(value)!;
-                      }
-                    },
-                    validator: (value){
-                      if(int.tryParse(value!) is int){
-                        return null;
-                      } else {
-                        return "Masukkan harga satuan";
+                        Get.back();
                       }
                     },
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-
-
-          SizedBox(
-            width: _width,
-            height: 100,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text("Kuantitas", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: kPrimaryColor)),
-                SizedBox(height: 5),
-                SizedBox(
-                  height: 70,
-                  child: TextFormField(
-                    controller: Qty,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        borderSide: BorderSide(color: kTextColor),
-                        gapPadding: 10,
-                      ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        borderSide: BorderSide(color: kTextColor),
-                        gapPadding: 10,
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        borderSide: BorderSide(color: kTextColor),
-                        gapPadding: 10,
-                      ),
-                      errorBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        borderSide: BorderSide(color: Colors.red),
-                        gapPadding: 10,
-                      ),
-                    ),
-                    onChanged: (value) {
-                      rab.number = value;
-                    },
-                    style: TextStyle(color:Colors.grey[900], fontSize: 14),
-                    onSaved: (value){
-                      rab.number = value!;
-                    },
-                    validator: (value){
-                      if(value!.isEmpty){
-                        return "Masukkan kuantitas item";
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-
-          SizedBox(
-            width: _width,
-            height: 100,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text("Total Harga", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: kPrimaryColor)),
-                SizedBox(height: 5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: _width*0.6,
-                      height: 70,
-                      child: TextFormField(
-                        controller: totalPrice,
-                        style: TextStyle(color:Colors.grey[900], fontSize: 14),
-                        keyboardType: TextInputType.none,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                            borderSide: BorderSide(color: kTextColor),
-                            gapPadding: 10,
-                          ),
-                          enabledBorder: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                            borderSide: BorderSide(color: kTextColor),
-                            gapPadding: 10,
-                          ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                            borderSide: BorderSide(color: kTextColor),
-                            gapPadding: 10,
-                          ),
-                          errorBorder: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                            borderSide: BorderSide(color: Colors.red),
-                            gapPadding: 10,
-                          ),
-                        ),
-                        onChanged: (value) {
-                          resultTotalPrice = value;
-                          rab.price;
-                        },
-                        onSaved: (value){
-                          resultTotalPrice = value!;
-                          rab.price;
-                        },
-                        validator: (value){
-                          if(int.tryParse(value!) is int){
-                            return null;
-                          } else {
-                            return "Tekan tombol disamping";
-                          }
-                        },
-                      ),
-                    ),
-
-                    GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          int totalPriceNumb = (int.parse(unitPrice.text) * int.parse(Qty.text));
-                          resultTotalPrice = totalPriceNumb.toString();
-                        });
-                      },
-                      child: Container(
-                        width: _width*0.3,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: kSecondaryColor,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Center(
-                          child: Text("TOTAL HARGA", style: TextStyle(fontWeight: FontWeight.w600, color: kPrimaryColor, fontSize: 15)),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          DefaultButton(
-            text: 'Simpan',
-            press: (){
-              if(_formKey.currentState!.validate()) {
-                _formKey.currentState!.save();
-
-                rab.userId = controller.userid;
-
-                controller.saveRAB();
-
-                Get.snackbar(
-                  "Sukses",
-                  'Data RAB berhasil ditambahkan',
-                  snackPosition: SnackPosition.TOP,
-                  backgroundColor: Colors.white,
-                  instantInit: false,
-                );
-
-                Get.back();
-              }
-            },
-          ),
-        ],
+          ],
+        )
       ),
     );
   }
 }
 
-Widget listCard(RABModel rab, double _width, double _height){
-  return Container(
-    width: _width,
-    height: 70,
-    decoration: BoxDecoration(
-      color: kSecondaryColor,
-      border: Border(
-          top: BorderSide(color: Colors.grey),
-          bottom: BorderSide(color: Colors.grey)
-      ),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: _width*0.2,
-          child: Text(rab.name, textAlign: TextAlign.center, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-        ),
+class ItemInfo {
+  String item;
+  String value;
+  String qty;
+  String total;
 
-        SizedBox(
-          width: _width*0.2,
-          child: Text(rab.oldPrice.toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-        ),
-
-        SizedBox(
-          width: _width*0.15,
-          child: Text(rab.number, textAlign: TextAlign.center, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-        ),
-
-        SizedBox(
-          width: _width*0.25,
-          child: Text(rab.price.toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-        ),
-      ],
-    ),
-  );
+  ItemInfo({
+    required this.item,
+    required this.value,
+    required this.qty,
+    required this.total,
+  });
 }
+
+var items = <ItemInfo>[
+  ItemInfo(
+    item: 'Semen',
+    value: 'Rp1.000',
+    qty: '2,00',
+    total: 'Rp2.000'
+  ),
+  ItemInfo(
+      item: 'Lantai',
+      value: 'Rp2.000',
+      qty: '3,00',
+      total: 'Rp6.000'
+  ),
+  ItemInfo(
+      item: 'Cat',
+      value: 'Rp3.000',
+      qty: '4,00',
+      total: 'Rp12.000'
+  ),
+];
 
 
 

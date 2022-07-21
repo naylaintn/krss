@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:krss/bloc/login_controller.dart';
+import 'package:krss/bloc/rab_controller.dart';
 import 'package:krss/util/style.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -382,6 +383,8 @@ class InformasiKPR extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    RABController rabController = Get.find();
+
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
 
@@ -491,7 +494,10 @@ class InformasiKPR extends StatelessWidget {
 
                       Expanded(
                         child:  InkWell(
-                          onTap: (){Get.toNamed("/rab");},
+                          onTap: (){
+                            rabController.getRABList();
+                            Get.toNamed("/rab");
+                            },
                           child: Container(
                             height: 70,
                             margin: EdgeInsets.only(top: 20),
@@ -709,17 +715,17 @@ class Menu extends StatelessWidget {
     menuItem(
       title: "Informasi Kredit",
       img: "cogwheel.png",
-      navigate: "",
+      navigate: "/information_credit",
     ),
     menuItem(
       title: "Daftar Toko Bangunan",
       img: "online-support.png",
-      navigate: "",
+      navigate: "/daftar_toko",
     ),
     menuItem(
       title: "Tukang Bangunan",
       img: "idea.png",
-      navigate: "",
+      navigate: "/tukang",
     ),
     menuItem(
       title: "Beli Bahan Bangunan",
@@ -734,7 +740,7 @@ class Menu extends StatelessWidget {
     menuItem(
       title: "Tenaga Fasilitator Lapangan",
       img: "engineer.png",
-      navigate: "",
+      navigate: "/tfl",
     ),
   ];
 

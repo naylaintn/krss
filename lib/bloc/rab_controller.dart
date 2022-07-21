@@ -2,20 +2,22 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:krss/bloc/login_controller.dart';
 import 'package:krss/model/RAB.dart';
 import 'package:get/get.dart';
-import '../model/response.dart';
 import '../util/constants.dart' as constants;
 import 'package:http/http.dart' as http;
 
 class RABController extends GetxController{
 
-  final _ph = constants.ph;
   final ph_domain = constants.domain;
 
-  var rabList = <RABModel>[].obs;
+  LoginController loginController = Get.find();
 
-  RABModel RAB = RABModel();
+  var rabList = <CostItem>[].obs;
+  CostItem costItem = CostItem();
+
+  var listArrived = RxBool(false).obs;
 
   String token = '';
   String userid = '';
@@ -23,16 +25,16 @@ class RABController extends GetxController{
 
   void saveRAB() async {
 
-    String json = jsonEncode(RAB);
+    String json = jsonEncode(costItem);
 
     Map<String, String> headers = {
       HttpHeaders.acceptHeader:"application/json",
       HttpHeaders.contentTypeHeader:"application/json",
-      'token': token,
-      'userid': userid
+      'token': loginController.check.value.token,
+      'userid': loginController.check.value.userId,
     };
 
-    var url = Uri.https(ph_domain, "/powerhost/course");
+    var url = Uri.https(ph_domain, "/budget/costitem");
 
     try{
 
@@ -41,13 +43,7 @@ class RABController extends GetxController{
       print('submit rab : status ${response.statusCode} : ${response.body}');
 
       if(response.statusCode==200){
-        HostResponse hostResponse = HostResponse.fromJson(jsonDecode(response.body));
-        if(hostResponse.responseCode == '00'){
-          RAB = RABModel.fromJson(hostResponse.content);
-          getRABList(RAB.parentId);
-        } else {
-          print("Save RAB error" + "${hostResponse.responseCode}" + "${hostResponse.responseMessage}");
-        }
+        costItem = CostItem.fromJson(jsonDecode(response.body));
       } else {
         print("save fail with host response : ${response.statusCode}");
       }
@@ -59,36 +55,30 @@ class RABController extends GetxController{
 
   }
 
-  void getRABList(int parentId) async {
+  void getRABList() async {
+
+    listArrived.value = RxBool(false);
 
     Map<String, String> headers = {
       HttpHeaders.acceptHeader:"application/json",
       HttpHeaders.contentTypeHeader:"application/json",
-      'token': token,
-      'userid': userid
+      'token': loginController.check.value.token,
+      'userid': loginController.check.value.userId,
     };
 
-    Map<String, String> params = {
-      'parentId': parentId.toString(),
-    };
 
-    var uri = Uri.https(ph_domain, "/powerhost/course", params);
+    var uri = Uri.https(ph_domain, "/budget/costitem/list");
 
     try {
 
       http.Response response = await http.get(uri, headers: headers);
 
       if(response.statusCode == 200){
+        List list = jsonDecode(response.body);
+        rabList.value = list.map((e) => CostItem.fromJson(e)).toList();
+        listArrived.value = RxBool(true);
+        print("getRABList success");
 
-        HostResponse hostResponse = HostResponse.fromJson(jsonDecode(response.body));
-
-        if(hostResponse.responseCode == '00'){
-          List list = hostResponse.content;
-          rabList.value = list.map((e) => RABModel.fromJson(e)).toList();
-          print("getRABList success");
-        } else {
-          print("getRABList fail with service response : ${hostResponse.responseCode}");
-        }
       } else {
         print("getRABList fail with host response : ${response.statusCode}");
       }
@@ -100,7 +90,7 @@ class RABController extends GetxController{
   }
 
 
-  void deleteRAB(int id, int parentId) async {
+  void deleteRAB(int id) async {
 
     Map<String, String> headers = {
       HttpHeaders.acceptHeader:"application/json",
@@ -119,10 +109,8 @@ class RABController extends GetxController{
 
       http.Response response = await http.delete(uri, headers: headers);
       if(response.statusCode == 200){
-        HostResponse hostResponse = HostResponse.fromJson(jsonDecode(response.body));
-        if(hostResponse.responseCode == '00'){
-          getRABList(parentId);
-        }
+        costItem = CostItem.fromJson(jsonDecode(response.body));
+
       } else {
 
       }

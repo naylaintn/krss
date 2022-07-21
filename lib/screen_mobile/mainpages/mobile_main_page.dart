@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:krss/bloc/dashboard_controller.dart';
 import 'package:get/get.dart';
 import 'package:krss/screen_mobile/accountpages/mobile_account_main.dart';
+import 'package:krss/screen_mobile/cartpages/cart_home.dart';
 import 'package:krss/screen_mobile/mainpages/mobile_home.dart';
 
 import 'components/bottomBarNav.dart';
@@ -21,7 +22,7 @@ class Mobile_MainPage extends StatelessWidget {
               index: controller.tabIndex,
               children: [
                 Mobile_Dashboard(),
-                Container(),
+                Cart(),
                 AccountPage(),
               ],
             ),

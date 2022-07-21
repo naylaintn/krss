@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:krss/bloc/login_controller.dart';
-import 'package:krss/bloc/profile_controller.dart';
-import 'package:krss/model/user_data.dart';
-import 'package:krss/screen_mobile/accountpages/components/registrasi.dart';
-import 'package:krss/util/global_widget.dart';
+import 'package:krss/bloc/user_controller.dart';
 import 'package:krss/util/style.dart';
 
 import 'components/login.dart';
@@ -33,8 +30,6 @@ class AccountLoginTrue extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    LoginController controller = Get.find();
-
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
 
@@ -56,13 +51,16 @@ class AccountLoginTrue extends StatelessWidget {
 }
 
 class AccountHeader extends StatelessWidget {
-  const AccountHeader({Key? key}) : super(key: key);
+  int index=0;
+  AccountHeader({Key? key, this.index=0}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
     LoginController controller = Get.find();
-    ProfileController profileController = Get.put(ProfileController());
+    UserDashboardController userDashboardController = Get.find();
+
+    userDashboardController.getUser(controller.check.value.userId, 0, 1);
 
     double _height = MediaQuery.of(context).size.height;
 
@@ -103,11 +101,12 @@ class AccountHeader extends StatelessWidget {
                     ),
                   );
                 } else {
-                  return InkWell(
-                    onTap: (){
+                  return IconButton(
+                    onPressed: (){
                       Get.toNamed("/avatar");
                     },
-                    child: Icon(Icons.account_circle, size: 35, color: kPrimaryColor),
+                    splashRadius: 10,
+                    icon: Icon(Icons.account_circle, size: 35, color: kPrimaryColor),
                   );
                 }
               }),
@@ -117,7 +116,7 @@ class AccountHeader extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(profileController.profile.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor)),
+                  Text(userDashboardController.userModel.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor)),
 
                   SizedBox(height: 5),
 
@@ -135,7 +134,7 @@ class AccountHeader extends StatelessWidget {
                     children: [
                       Icon(Icons.phone_android_rounded, size: 12, color: Colors.grey,),
                       SizedBox(width: 10),
-                      Text(profileController.profile.alias, style: TextStyle(fontSize: 14, color: Colors.grey)),
+                      Text(userDashboardController.userModel.alias, style: TextStyle(fontSize: 14, color: Colors.grey)),
                     ],
                   ),
                 ],
